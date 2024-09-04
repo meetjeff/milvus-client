@@ -19,6 +19,18 @@ class MilvusClient():
         url = self.base_url + "collections/create"
         return await self.__post_execute(url, collection_config)
 
+    async def load_collection(
+        self,
+        collection_name: str,
+        db_name: str = None
+    ) -> dict:
+        url = self.base_url + "collections/load"
+        payload = {
+            "collectionName": collection_name,
+            "dbName": db_name
+        }
+        return await self.__post_execute(url, payload)
+
     async def describe_collection(
         self,
         collection_name: str,

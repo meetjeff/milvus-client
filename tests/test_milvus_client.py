@@ -30,6 +30,18 @@ async def test_create_collection_error(milvus_client):
             await milvus_client.create_collection({"name": "test_collection"})
 
 @pytest.mark.asyncio
+async def test_load_collection(milvus_client):
+    with patch('milvus_client.MilvusClient.async_post_milvus') as mock_post:
+        mock_post.return_value = {'code': 0, 'data': {}}
+        result = await milvus_client.load_collection("test_collection")
+        assert result == {'code': 0, 'data': {}}
+        mock_post.assert_called_once_with(
+            "http://localhost:19530/v2/vectordb/collections/load",
+            milvus_client.headers,
+            {"collectionName": "test_collection", "dbName": None}
+        )
+
+@pytest.mark.asyncio
 async def test_describe_collection(milvus_client):
     with patch('milvus_client.MilvusClient.async_post_milvus') as mock_post:
         mock_post.return_value = {
